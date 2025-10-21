@@ -1,0 +1,52 @@
+<!--
+Paste into an .html file and open in browser
+-->
+<!doctype html>
+<html>
+<body>
+  Day: <input id="d" type="number" min="1" max="31" value="1"> 
+  Month: <input id="m" type="number" min="1" max="12" value="1"> 
+  Year: <input id="y" type="number" min="1900" max="2100" value="2000">
+  <button id="btn">Calculate age</button>
+  <div id="out"></div>
+
+  <script>
+  // ...existing code...
+  function calculateAge(day, month, year) {
+      day = Number(day); month = Number(month); year = Number(year);
+      if (!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year)) {
+          return { error: "Inputs must be integers" };
+      }
+      const birth = new Date(year, month - 1, day);
+      if (birth.getFullYear() !== year || birth.getMonth() !== month - 1 || birth.getDate() !== day) {
+          return { error: "Invalid date" };
+      }
+      const now = new Date();
+      if (birth > now) return { error: "Birth date is in the future" };
+
+      let years = now.getFullYear() - birth.getFullYear();
+      let months = now.getMonth() - birth.getMonth();
+      let days = now.getDate() - birth.getDate();
+
+      if (days < 0) {
+          const prevMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+          days += prevMonthLastDay;
+          months -= 1;
+      }
+      if (months < 0) {
+          months += 12;
+          years -= 1;
+      }
+      return { years, months, days };
+  }
+  // ...existing code...
+  document.getElementById('btn').addEventListener('click', () => {
+    const d = document.getElementById('d').value;
+    const m = document.getElementById('m').value;
+    const y = document.getElementById('y').value;
+    const res = calculateAge(d, m, y);
+    document.getElementById('out').textContent = res.error || `${res.years} years, ${res.months} months, ${res.days} days`;
+  });
+  </script>
+</body>
+</html>
